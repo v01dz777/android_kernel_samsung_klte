@@ -5,7 +5,7 @@ BUILD_TOP_DIR=..
 BUILD_KERNEL_DIR=$(pwd)
 
 SECURE_SCRIPT=$BUILD_TOP_DIR/../buildscript/tools/signclient.jar
-BUILD_CROSS_COMPILE=../../prebuilts/gcc/linux-x86/arm/arm-eabi-4.8/bin/arm-eabi-
+BUILD_CROSS_COMPILE=/opt/toolchains/arm-eabi-4.8/bin/arm-eabi-
 BUILD_JOB_NUMBER=`grep processor /proc/cpuinfo|wc -l`
 
 # Default Python version is 2.7
@@ -14,7 +14,6 @@ ln -sf /usr/bin/python2.7 ./bin/python
 export PATH=$(pwd)/bin:$PATH
 
 KERNEL_DEFCONFIG=msm8974_sec_defconfig
-DEBUG_DEFCONFIG=msm8974_sec_eng_defconfig
 SELINUX_DEFCONFIG=selinux_defconfig
 SELINUX_LOG_DEFCONFIG=selinux_log_defconfig
 
@@ -84,7 +83,10 @@ TEMP=${BUILD_COMMAND#*_}
 REGION=${TEMP%%_*}
 CARRIER=${TEMP##*_}
 
-if [[ "$BUILD_COMMAND" == "klte"* ]]; then		# KLTE
+if [[ "$BUILD_COMMAND" == "klte_dcm"* ]]; then		# KLTEDCM
+	VARIANT=k${CARRIER}
+	DTS_NAMES=msm8974pro-ac-sec-kjpn-
+elif [[ "$BUILD_COMMAND" == "klte"* ]]; then		# KLTE
 	VARIANT=k${CARRIER}
 	DTS_NAMES=msm8974pro-ac-sec-k-
 elif [[ "$BUILD_COMMAND" == "kactivelte"* ]]; then	# KACTIVE
@@ -126,8 +128,9 @@ case $1 in
 		BOARD_KERNEL_PAGESIZE=2048
 		BOARD_KERNEL_TAGS_OFFSET=0x01E00000
 		BOARD_RAMDISK_OFFSET=0x02000000
-		BOARD_KERNEL_CMDLINE="console=ttyHSL0,115200,n8 androidboot.hardware=qcom user_debug=31 msm_rtb.filter=0x37 ehci-hcd.park=3"
 		#BOARD_KERNEL_CMDLINE="console=ttyHSL0,115200,n8 androidboot.hardware=qcom user_debug=31 msm_rtb.filter=0x37 ehci-hcd.park=3"
+		#BOARD_KERNEL_CMDLINE="console=ttyHSL0,115200,n8 androidboot.hardware=qcom user_debug=31 msm_rtb.filter=0x37 ehci-hcd.park=3"
+		BOARD_KERNEL_CMDLINE="console=null androidboot.hardware=qcom user_debug=23 msm_rtb.filter=0x37 ehci-hcd.park=3"
 		mkdir -p $BUILD_KERNEL_OUT_DIR
 		;;
 
@@ -166,7 +169,7 @@ FUNC_APPEND_DTB()
 }
 
 INSTALLED_DTIMAGE_TARGET=${BUILD_KERNEL_OUT_DIR}/dt.img
-DTBTOOL=$BUILD_TOP_DIR/kernel/tools/dtbTool
+DTBTOOL=$BUILD_KERNEL_DIR/release-tools/dtbToolCM
 
 FUNC_BUILD_DTIMAGE_TARGET()
 {
@@ -177,13 +180,6 @@ FUNC_BUILD_DTIMAGE_TARGET()
 	echo ""
 	echo "DT image target : $INSTALLED_DTIMAGE_TARGET"
 	
-	if ! [ -e $DTBTOOL ] ; then
-		if ! [ -d $BUILD_TOP_DIR/out/host/linux-x86/bin ] ; then
-			mkdir -p $BUILD_TOP_DIR/out/host/linux-x86/bin
-		fi
-		cp $BUILD_TOP_DIR/kernel/tools/dtbTool $DTBTOOL
-	fi
-
 	echo "$DTBTOOL -o $INSTALLED_DTIMAGE_TARGET -s $BOARD_KERNEL_PAGESIZE \
 		-p $BUILD_KERNEL_OUT_DIR/scripts/dtc/ $BUILD_KERNEL_OUT_DIR/arch/arm/boot/"
 		$DTBTOOL -o $INSTALLED_DTIMAGE_TARGET -s $BOARD_KERNEL_PAGESIZE \
@@ -217,15 +213,13 @@ FUNC_BUILD_KERNEL()
 	fi
 
 	if ! [ -e $PRODUCT_OUT/ramdisk.img ] ; then
-		echo "error no ramdisk : "$PRODUCT_OUT/ramdisk.img ""
-		exit -1
+		FUNC_MKRAMDISKIMG
 	fi
 
 	make -C $BUILD_KERNEL_DIR O=$BUILD_KERNEL_OUT_DIR -j$BUILD_JOB_NUMBER ARCH=arm \
 			CROSS_COMPILE=$BUILD_CROSS_COMPILE \
 			$KERNEL_DEFCONFIG VARIANT_DEFCONFIG=$VARIANT_DEFCONFIG \
-			DEBUG_DEFCONFIG=$DEBUG_DEFCONFIG SELINUX_DEFCONFIG=$SELINUX_DEFCONFIG \
-			SELINUX_LOG_DEFCONFIG=$SELINUX_LOG_DEFCONFIG || exit -1
+			SELINUX_DEFCONFIG=$SELINUX_DEFCONFIG || exit -1
 
 	make -C $BUILD_KERNEL_DIR O=$BUILD_KERNEL_OUT_DIR -j$BUILD_JOB_NUMBER ARCH=arm \
 			CROSS_COMPILE=$BUILD_CROSS_COMPILE || exit -1
@@ -240,6 +234,27 @@ FUNC_BUILD_KERNEL()
 	echo ""
 }
 
+RAMDISK_SRC_DIR=$BUILD_TOP_DIR/sc04f_boot_ramdisk
+RAMDISK_TMP_DIR=/tmp/sc04f_boot_ramdisk
+FUNC_MKRAMDISKIMG()
+{
+    echo copy $RAMDISK_SRC_DIR to $(dirname $RAMDISK_TMP_DIR)
+
+    if [ -d $RAMDISK_TMP_DIR ]; then
+        rm -rf $RAMDISK_TMP_DIR
+    fi
+    cp -a $RAMDISK_SRC_DIR $(dirname $RAMDISK_TMP_DIR)
+    rm -rf $RAMDISK_TMP_DIR/.git
+    find $RAMDISK_TMP_DIR -name .gitkeep | xargs rm --force
+    find $RAMDISK_TMP_DIR -name .gitignore | xargs rm --force
+    if [ -f $RAMDISK_TMP_DIR/recovery_version ]; then
+        rm -f $RAMDISK_TMP_DIR/recovery_version
+    fi
+
+    $BUILD_KERNEL_DIR/release-tools/mkbootfs ${RAMDISK_TMP_DIR} > $PRODUCT_OUT/ramdisk.cpio
+    $BUILD_KERNEL_DIR/release-tools/minigzip < $PRODUCT_OUT/ramdisk.cpio > $PRODUCT_OUT/ramdisk.img
+}
+
 FUNC_MKBOOTIMG()
 {
 	echo ""
@@ -247,14 +262,7 @@ FUNC_MKBOOTIMG()
 	echo "START : FUNC_MKBOOTIMG"
 	echo "==================================="
 	echo ""
-	MKBOOTIMGTOOL=$BUILD_TOP_DIR/kernel/tools/mkbootimg
-
-	if ! [ -e $MKBOOTIMGTOOL ] ; then
-		if ! [ -d $BUILD_TOP_DIR/out/host/linux-x86/bin ] ; then
-			mkdir -p $BUILD_TOP_DIR/out/host/linux-x86/bin
-		fi
-		cp $BUILD_TOP_DIR/kernel/tools/mkbootimg $MKBOOTIMGTOOL
-	fi
+	MKBOOTIMGTOOL=$BUILD_KERNEL_DIR/release-tools/mkbootimg
 
 	echo "Making boot.img ..."
 	echo "	$MKBOOTIMGTOOL --kernel $KERNEL_ZIMG \
@@ -294,12 +302,12 @@ FUNC_MKBOOTIMG()
 		rm $BUILD_TOP_DIR/kernel/okernel/$BUILD_COMMAND/boot_${MODEL}_${CARRIER}_${CERTIFICATION}.tar -f
 	fi
 
-        echo ""
-	echo "================================================="
-        echo "-->Note, copy to $BUILD_TOP_DIR/../output/ directory"
-	echo "================================================="
-	cp ../$PRODUCT_OUT/boot_${MODEL}_${CARRIER}_${CERTIFICATION}.tar $BUILD_TOP_DIR/../../output/boot_${MODEL}_${CARRIER}_${CERTIFICATION}.tar || exit -1
-        cd ~
+#        echo ""
+#	echo "================================================="
+#        echo "-->Note, copy to $BUILD_TOP_DIR/../output/ directory"
+#	echo "================================================="
+#	cp ../$PRODUCT_OUT/boot_${MODEL}_${CARRIER}_${CERTIFICATION}.tar $BUILD_TOP_DIR/../../output/boot_${MODEL}_${CARRIER}_${CERTIFICATION}.tar || exit -1
+#        cd ~
 
 	echo ""
 	echo "==================================="
@@ -338,6 +346,7 @@ SECFUNC_PRINT_HELP()
 	echo "      klte_tmo"
 	echo "      klte_vzw"
 	echo "      klte_usc"
+	echo "      klte_dcm"
 	echo "      kactivelte_att"
 	echo "      ksportslte_spr"
 	echo "      slte_att"
