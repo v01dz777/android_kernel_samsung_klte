@@ -14,7 +14,7 @@ ln -sf /usr/bin/python2.7 ./bin/python
 export PATH=$(pwd)/bin:$PATH
 
 KERNEL_DEFCONFIG=msm8974_sec_defconfig
-SELINUX_DEFCONFIG=selinux_defconfig
+#SELINUX_DEFCONFIG=selinux_defconfig
 #SELINUX_LOG_DEFCONFIG=selinux_log_defconfig
 
 #sed -i.bak "s/CONFIG_MODVERSIONS=y/CONFIG_MODVERSIONS=n/g" ${BUILD_KERNEL_DIR}/arch/arm/configs/${KERNEL_DEFCONFIG}
@@ -130,7 +130,7 @@ case $1 in
 		BOARD_RAMDISK_OFFSET=0x02000000
 		#BOARD_KERNEL_CMDLINE="console=ttyHSL0,115200,n8 androidboot.hardware=qcom user_debug=31 msm_rtb.filter=0x37 ehci-hcd.park=3"
 		#BOARD_KERNEL_CMDLINE="console=ttyHSL0,115200,n8 androidboot.hardware=qcom user_debug=31 msm_rtb.filter=0x37 ehci-hcd.park=3"
-		BOARD_KERNEL_CMDLINE="console=null androidboot.hardware=qcom user_debug=23 msm_rtb.filter=0x37 ehci-hcd.park=3 androidboot.selinux=permissive"
+		BOARD_KERNEL_CMDLINE="console=null androidboot.hardware=qcom user_debug=23 msm_rtb.filter=0x37 ehci-hcd.park=3"
 		mkdir -p $BUILD_KERNEL_OUT_DIR
 		;;
 
@@ -218,7 +218,7 @@ FUNC_BUILD_KERNEL()
 
 	make -C $BUILD_KERNEL_DIR O=$BUILD_KERNEL_OUT_DIR -j$BUILD_JOB_NUMBER ARCH=arm \
 			CROSS_COMPILE=$BUILD_CROSS_COMPILE \
-			$KERNEL_DEFCONFIG VARIANT_DEFCONFIG=$VARIANT_DEFCONFIG SELINUX_DEFCONFIG=$SELINUX_DEFCONFIG || exit -1
+			$KERNEL_DEFCONFIG VARIANT_DEFCONFIG=$VARIANT_DEFCONFIG || exit -1
 
 	make -C $BUILD_KERNEL_DIR O=$BUILD_KERNEL_OUT_DIR -j$BUILD_JOB_NUMBER ARCH=arm \
 			CROSS_COMPILE=$BUILD_CROSS_COMPILE || exit -1
@@ -233,8 +233,10 @@ FUNC_BUILD_KERNEL()
 	echo ""
 }
 
-RAMDISK_SRC_DIR=$BUILD_TOP_DIR/sc04f_boot_ramdisk
-RAMDISK_TMP_DIR=/tmp/sc04f_boot_ramdisk
+#RAMDISK_SRC_DIR=$BUILD_TOP_DIR/sc04f_boot_ramdisk
+#RAMDISK_TMP_DIR=/tmp/sc04f_boot_ramdisk
+RAMDISK_SRC_DIR=$BUILD_TOP_DIR/sc04f_recovery_ramdisk
+RAMDISK_TMP_DIR=/tmp/sc04f_recovery_ramdisk
 FUNC_MKRAMDISKIMG()
 {
     echo copy $RAMDISK_SRC_DIR to $(dirname $RAMDISK_TMP_DIR)
@@ -293,7 +295,9 @@ FUNC_MKBOOTIMG()
 	fi
 
 	cd $PRODUCT_OUT
-    tar cvf boot_${MODEL}_${CARRIER}_${CERTIFICATION}.tar boot.img
+    #tar cvf boot_${MODEL}_${CARRIER}_${CERTIFICATION}.tar boot.img
+    mv boot.img recovery.img
+	tar cvf recovery_${MODEL}_${CARRIER}_${CERTIFICATION}.tar recovery.img
 
 	if ! [ -d $BUILD_TOP_DIR/kernel/okernel/$BUILD_COMMAND ] ; then
 		mkdir -p $BUILD_TOP_DIR/kernel/okernel/$BUILD_COMMAND
