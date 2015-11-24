@@ -30,6 +30,7 @@ JS_PROJECT ?= $(shell $(PERL) -e '$$of = "n"; while (<>) { if (/CONFIG_SEC_JS_PR
 JS_TW_PROJECT ?= $(shell $(PERL) -e '$$of = "n"; while (<>) { if (/CONFIG_MACH_JS01LTEZT=y/) { $$of = "y"; break; } } print $$of;' $(KERNEL_CONFIG))
 LOCALE_CHN_DUOS ?= $(shell $(PERL) -e '$$of = "n"; while (<>) { if (/CONFIG_MACH_H3GDUOS=y/) { $$of = "y"; break; } } print $$of;' $(KERNEL_CONFIG))
 K_PROJECT ?= $(shell $(PERL) -e '$$of = "n"; while (<>) { if (/CONFIG_SEC_K_PROJECT=y/) { $$of = "y"; break; } } print $$of;' $(KERNEL_CONFIG))
+K_JPN_PROJECT ?= $(shell $(PERL) -e '$$of = "n"; while (<>) { if (/CONFIG_MACH_KLTE_JPN=y/) { $$of = "y"; break; } } print $$of;' $(KERNEL_CONFIG))
 S_PROJECT ?= $(shell $(PERL) -e '$$of = "n"; while (<>) { if (/CONFIG_SEC_S_PROJECT=y/) { $$of = "y"; break; } } print $$of;' $(KERNEL_CONFIG))
 PATEK_PROJECT ?= $(shell $(PERL) -e '$$of = "n"; while (<>) { if (/CONFIG_SEC_PATEK_PROJECT=y/) { $$of = "y"; break; } } print $$of;' $(KERNEL_CONFIG))
 LOCALE_JSGLTE_CHN_CMCC ?= $(shell $(PERL) -e '$$of = "n"; while (<>) { if (/CONFIG_MACH_JSGLTE_CHN_CMCC=y/) { $$of = "y"; break; } } print $$of;' $(KERNEL_CONFIG))
@@ -92,7 +93,11 @@ VASTALTE_PROJECT ?= $(shell $(PERL) -e '$$of = "n"; while (<>) { if (/CONFIG_MAC
 
 ifeq "$(KERNEL_USE_OF)" "y"
 ifeq "$(K_PROJECT)" "y"
-DTS_FILES = $(wildcard $(TOP)/kernel/arch/arm/boot/dts/msm8974pro/$(DTS_NAME)pro-sec*.dts)
+    ifeq "$(K_JPN_PROJECT)" "y"
+        DTS_FILES = $(wildcard $(TOP)/kernel/arch/arm/boot/dts/msm8974pro/$(DTS_NAME)pro-ac-sec-kjpn*.dts)
+    else
+        DTS_FILES = $(wildcard $(TOP)/kernel/arch/arm/boot/dts/msm8974pro/$(DTS_NAME)pro-sec*.dts)
+    endif
 endif
 ifeq "$(S_PROJECT)" "y"
 DTS_FILES = $(wildcard $(TOP)/kernel/arch/arm/boot/dts/msm8974pro/$(DTS_NAME)pro-sec*.dts)
