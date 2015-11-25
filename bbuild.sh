@@ -13,7 +13,7 @@
 BOEFFLA_VERSION="1.0-test-CM13.0-g900f"
 EXTENDED_CMDLINE="androidboot.selinux=permissive"
 
-TOOLCHAIN="/opt/toolchains/arm-eabi-4.8/bin/arm-eabi-"
+TOOLCHAIN="/opt/toolchains/arm-linux-androideabi-4.9/bin/arm-linux-androideabi-"
 
 COMPILE_DTB="y"
 MODULES_IN_SYSTEM="y"
