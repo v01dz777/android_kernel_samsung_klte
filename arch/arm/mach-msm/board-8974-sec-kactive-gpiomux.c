@@ -86,6 +86,16 @@ static struct msm_gpiomux_config gpio_nc_configs[] __initdata = {
 #if !defined(CONFIG_MACH_KACTIVELTE_DCM)
 	GPIOMUX_SET_NC(73),
 #endif
+#if defined(CONFIG_MACH_KACTIVELTE_DCM)
+	GPIOMUX_SET_NC(85),
+#endif
+#if defined(CONFIG_MACH_KACTIVELTE_EUR)
+	GPIOMUX_SET_NC(104),
+	GPIOMUX_SET_NC(119),
+	GPIOMUX_SET_NC(123),
+	GPIOMUX_SET_NC(126),
+	GPIOMUX_SET_NC(127),
+#endif
 	GPIOMUX_SET_NC(105),
 	GPIOMUX_SET_NC(111),
 	GPIOMUX_SET_NC(112),
@@ -490,9 +500,20 @@ static struct gpiomux_setting mhl_active_cfg = {
 };
 
 static struct gpiomux_setting mhl_suspend_cfg = {
+#if !defined(CONFIG_MACH_KACTIVELTE_DCM)
 	.func = GPIOMUX_FUNC_GPIO,  /* IN-PD */
 	.drv = GPIOMUX_DRV_2MA,
 	.pull = GPIOMUX_PULL_DOWN,
+#else
+	.func = GPIOMUX_FUNC_3,
+	/*
+	 * Please keep I2C GPIOs drive-strength at minimum (2ma). It is a
+	 * workaround for HW issue of glitches caused by rapid GPIO current-
+	 * change.
+	 */
+	.drv = GPIOMUX_DRV_2MA,
+	.pull = GPIOMUX_PULL_NONE,
+#endif
 };
 
 static struct gpiomux_setting mhl_hpd_active_cfg = {
@@ -695,20 +716,19 @@ static struct msm_gpiomux_config msm_epm_configs[] __initdata = {
 static struct msm_gpiomux_config msm_blsp_configs[] __initdata = {
 #if defined(CONFIG_MACH_KACTIVELTE_DCM)
         {
-                .gpio      = 2,         /* BLSP1 QUP*/
+                .gpio      = 2,         /* BLSP1 QUP ISDBT*/
                 .settings = {
-                        [GPIOMUX_SUSPENDED] = &gpio_suspend_config[0],
+			[GPIOMUX_SUSPENDED] = &gpio_i2c_config,
 			[GPIOMUX_ACTIVE] = &gpio_i2c_config,
                 },
         },
         {
-                .gpio      = 3,         /* BLSP1 QUP */
+                .gpio      = 3,         /* BLSP1 QUP ISDBT*/
                 .settings = {
-                        [GPIOMUX_SUSPENDED] = &gpio_suspend_config[0],
+			[GPIOMUX_SUSPENDED] = &gpio_i2c_config,
 			[GPIOMUX_ACTIVE] = &gpio_i2c_config,
                 },
         },
-
 #endif
 #if defined(CONFIG_KS8851) || defined(CONFIG_KS8851_MODULE)
 	{
@@ -1607,12 +1627,21 @@ static void msm_gpiomux_sdc3_install(void)
 			    ARRAY_SIZE(msm8974_sdc3_configs));
 }
 
+#ifdef CONFIG_MACH_KACTIVELTE_DCM
+static struct gpiomux_setting hrm_int_suspend_cfg = {
+	.func = GPIOMUX_FUNC_GPIO,
+	.drv = GPIOMUX_DRV_2MA,
+	.pull = GPIOMUX_PULL_DOWN,
+	.dir = GPIOMUX_IN,
+};
+#else
 static struct gpiomux_setting general_gpio_suspend_cfg1 = {
 	.func = GPIOMUX_FUNC_GPIO,
 	.drv = GPIOMUX_DRV_2MA,
 	.pull = GPIOMUX_PULL_NONE,
 	.dir = GPIOMUX_IN,
 };
+#endif
 
 static struct gpiomux_setting general_gpio_suspend_cfg2 = {
 	.func = GPIOMUX_FUNC_GPIO,
@@ -1626,7 +1655,11 @@ static struct msm_gpiomux_config msm8974_remainder_configs[] __initdata = {
 		/*detect memory*/
 		.gpio      = 94,
 		.settings = {
+#ifdef CONFIG_MACH_KACTIVELTE_DCM
+			[GPIOMUX_SUSPENDED] = &hrm_int_suspend_cfg,
+#else
 			[GPIOMUX_SUSPENDED] = &general_gpio_suspend_cfg1,
+#endif
 		},
 	},
 	{
@@ -2023,7 +2056,7 @@ static struct gpiomux_setting senn3ab_push_setting = {
 	.func = GPIOMUX_FUNC_GPIO,
 	.drv = GPIOMUX_DRV_2MA,
 	.pull = GPIOMUX_PULL_NONE,
-	.dir = GPIOMUX_OUT_LOW,
+	.dir = GPIOMUX_IN,
 };
 
 static struct msm_gpiomux_config msm8974pro_senn3ab_configs[] __initdata = {
