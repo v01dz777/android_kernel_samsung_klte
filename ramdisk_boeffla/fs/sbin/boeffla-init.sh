@@ -75,9 +75,9 @@
 
 	# Ext4 tweaks default to on
 	/sbin/busybox sync
-	mount -o remount,commit=20,noatime $CACHE_DEVICE /cache
+	/sbin/busybox mount -o remount,commit=20,noatime $CACHE_DEVICE /cache
 	/sbin/busybox sync
-	mount -o remount,commit=20,noatime $DATA_DEVICE /data
+	/sbin/busybox mount -o remount,commit=20,noatime $DATA_DEVICE /data
 	/sbin/busybox sync
 
 	# Initialize swappiness to 130 for vnswap
