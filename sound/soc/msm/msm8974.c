@@ -141,7 +141,7 @@ static struct wcd9xxx_mbhc_config mbhc_cfg = {
 #endif
 	.insert_detect = true,
 	.swap_gnd_mic = NULL,
-#if (defined(CONFIG_MACH_KLTE_KOR) || defined(CONFIG_MACH_KLTE_JPN)) && !defined(CONFIG_SEC_FACTORY)
+#if (defined(CONFIG_MACH_KLTE_KOR) || defined(CONFIG_MACH_KLTE_JPN)) || defined(CONFIG_MACH_KACTIVELTE_DCM) && !defined(CONFIG_SEC_FACTORY)
 	.cs_enable_flags = (1 << MBHC_CS_ENABLE_POLLING),
 #else
 	.cs_enable_flags = 0,
@@ -236,7 +236,7 @@ static int main_mic_delay = 0;
 int speaker_status = 0;
 EXPORT_SYMBOL(speaker_status);
 #endif
-#if defined(CONFIG_MACH_KLTE_KOR) || defined(CONFIG_MACH_KLTE_JPN)
+#if defined(CONFIG_MACH_KLTE_KOR) || defined(CONFIG_MACH_KLTE_JPN) || defined(CONFIG_MACH_KACTIVELTE_DCM)
 static int fsa_en_gpio;
 #endif
 
@@ -1708,7 +1708,7 @@ static int msm8974_taiko_event_cb(struct snd_soc_codec *codec,
 	}
 }
 
-#if defined(CONFIG_MACH_KLTE_KOR) || defined(CONFIG_MACH_KLTE_JPN)
+#if defined(CONFIG_MACH_KLTE_KOR) || defined(CONFIG_MACH_KLTE_JPN) || defined(CONFIG_MACH_KACTIVELTE_DCM)
 extern unsigned int system_rev;
 #endif
 
@@ -3220,7 +3220,7 @@ static __devinit int msm8974_asoc_machine_probe(struct platform_device *pdev)
 		}
 	}
 
-#if defined(CONFIG_MACH_KLTE_KOR) || defined(CONFIG_MACH_KLTE_JPN)
+#if defined(CONFIG_MACH_KLTE_KOR) || defined(CONFIG_MACH_KLTE_JPN) || defined(CONFIG_MACH_KACTIVELTE_DCM)
 	/* enable FSA8039 for jack detection */
 	pr_info("%s: Check to enable FSA8039\n", __func__);
 	fsa_en_gpio = of_get_named_gpio(pdev->dev.of_node,
@@ -3245,7 +3245,7 @@ static __devinit int msm8974_asoc_machine_probe(struct platform_device *pdev)
 	}
 #endif
 	/* the switch to connect the main mic to the codec or es705 */
-#if defined(CONFIG_MACH_KLTE_JPN)
+#if defined(CONFIG_MACH_KLTE_JPN) || defined(CONFIG_MACH_KACTIVELTE_DCM)
 #if defined(CONFIG_MACH_KLTE_MAX77828_JPN)
 	micbias_en_msm_gpio = of_get_named_gpio(pdev->dev.of_node,
 				"qcom,micbias-en-msm-gpio", 0);

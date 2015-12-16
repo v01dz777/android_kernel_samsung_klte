@@ -563,7 +563,7 @@ static struct sec_therm_platform_data sec_therm_pdata = {
 	.adc_table	= temper_table_ap,
 	.polling_interval = 30 * 1000, /* msecs */
 	.get_siop_level = get_msm8974_siop_level,
-#if defined(CONFIG_MACH_HLTEDCM) || defined(CONFIG_MACH_HLTEKDI) || defined(CONFIG_MACH_JS01LTEDCM) || defined(CONFIG_MACH_KLTE_JPN)
+#if defined(CONFIG_MACH_HLTEDCM) || defined(CONFIG_MACH_HLTEKDI) || defined(CONFIG_MACH_JS01LTEDCM) || defined(CONFIG_MACH_KLTE_JPN) || defined(CONFIG_MACH_KACTIVELTE_DCM)
 	.no_polling	= 0,
 #else
 	.no_polling	= 1,

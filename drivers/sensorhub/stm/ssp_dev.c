@@ -250,7 +250,7 @@ static int ssp_parse_dt(struct device *dev,
 		goto dt_exit;
 	}
 
-#if defined(CONFIG_MACH_KLTE_JPN)
+#if defined(CONFIG_MACH_KLTE_JPN) || defined(CONFIG_MACH_KACTIVELTE_DCM)
 #if defined(CONFIG_MACH_KLTE_MAX77828_JPN)
 	data->rst = of_get_named_gpio_flags(np, "ssp,rst-gpio",
 		0, &flags);

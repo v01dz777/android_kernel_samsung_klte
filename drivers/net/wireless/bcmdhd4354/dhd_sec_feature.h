@@ -238,7 +238,7 @@
 
 #define WRITE_WLANINFO
 
-#ifdef CONFIG_MACH_KLTE_DCM
+#if defined(CONFIG_MACH_KLTE_DCM) || defined(CONFIG_MACH_KACTIVELTE_DCM)
 #define CUSTOMER_BCN_TIMEOUT
 #define CUSTOMER_BCN_TIMEOUT_VALUE 4 // change value
 #else

@@ -233,6 +233,9 @@ ifeq ($(CONFIG_SEC_KACTIVE_PROJECT),y)
 ifeq ($(CONFIG_SEC_LOCALE_KOR),y)
     # dtbs for KOR
     dtb-$(CONFIG_SEC_KACTIVE_PROJECT)	+= msm8974pro-ac-sec-kactivelteskt-r01.dtb
+else ifeq ($(CONFIG_SEC_LOCALE_JPN),y)
+    # dtbs for JPN
+    dtb-$(CONFIG_SEC_KACTIVE_PROJECT)	+= msm8974pro-ac-sec-kactiveltedcm-r02.dtb
 else
     # default dtbs
     dtb-$(CONFIG_SEC_KACTIVE_PROJECT)	+= msm8974pro-ac-sec-kactivelte-r00.dtb

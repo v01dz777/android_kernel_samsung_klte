@@ -2189,6 +2189,13 @@ config MACH_KACTIVELTE_SKT
 	help
 	  Support for Samsung KACTIVELTE_SKT device.
 
+config MACH_KACTIVELTE_DCM
+	default n
+	bool "Samsung model KACTIVELTE_DCM"
+	select SEC_KACTIVE_PROJECT
+	help
+	  Support for Samsung KACTIVELTE_DCM device.
+
 config SEC_KSPORTS_PROJECT
 	depends on ARCH_MSM8974PRO
 	default n
