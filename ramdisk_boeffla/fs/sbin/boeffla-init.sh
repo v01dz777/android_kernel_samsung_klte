@@ -234,17 +234,17 @@
 	fi
 
 # If not explicitely configured to permissive, set SELinux to enforcing and restart mpdecision
-#	if [ ! -f $PERMISSIVE_ENABLER ]; then
-#		echo "1" > /sys/fs/selinux/enforce
-#
-#		stop mpdecision
-#		/sbin/busybox sleep 0.5
-#		start mpdecision
-#
-#		echo $(date) "SELinux: enforcing" >> $BOEFFLA_LOGFILE
-#	else
-#		echo $(date) "SELinux: permissive" >> $BOEFFLA_LOGFILE
-#	fi
+	if [ ! -f $PERMISSIVE_ENABLER ]; then
+		echo "1" > /sys/fs/selinux/enforce
+
+		stop mpdecision
+		/sbin/busybox sleep 0.5
+		start mpdecision
+
+		echo $(date) "SELinux: enforcing" >> $BOEFFLA_LOGFILE
+	else
+		echo $(date) "SELinux: permissive" >> $BOEFFLA_LOGFILE
+	fi
 
 # Finished
 	echo $(date) Boeffla-Kernel initialisation completed >> $BOEFFLA_LOGFILE
