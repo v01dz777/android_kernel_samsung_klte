@@ -5690,6 +5690,7 @@ static int synaptics_rmi4_stop_device(struct synaptics_rmi4_data *rmi4_data)
 	if (wake_options_okto_enable())
 	{
 		enable_irq_wake(rmi4_data->i2c_client->irq);
+		wake_funcs_set_prox(true);
 		screen_wake_options_when_off = screen_wake_options;
 	}
 	else
@@ -5753,6 +5754,7 @@ static int synaptics_rmi4_start_device(struct synaptics_rmi4_data *rmi4_data)
 	if (screen_wake_options_when_off)
 	{
 		disable_irq_wake(rmi4_data->i2c_client->irq);
+		wake_funcs_set_prox(false);
 	}
 	else
 		enable_irq(rmi4_data->i2c_client->irq);
