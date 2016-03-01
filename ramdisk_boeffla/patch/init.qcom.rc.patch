@@ -1,0 +1,25 @@
+From e304f56aba861130bcf7ffc632a26c92b526a90f Mon Sep 17 00:00:00 2001
+From: andip71 <andreasp@gmx.de>
+Date: Tue, 1 Mar 2016 10:18:24 +0100
+Subject: [PATCH] 2
+
+---
+ init.qcom.rc | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/init.qcom.rc b/init.qcom.rc
+index 13c27a4..bf44c28 100755
+--- a/init.qcom.rc
++++ b/init.qcom.rc
+@@ -126,7 +126,7 @@ on post-fs-data
+     chmod 0664 /sys/class/leds/button-backlight/max_brightness
+ 
+     # Torch
+-    chmod 0660 /sys/class/leds/torch-sec1/brightness
++    chmod 0666 /sys/class/leds/torch-sec1/brightness
+     chown system camera /sys/class/leds/torch-sec1/brightness
+ 
+     # Touchscreen
+-- 
+1.9.1
+
