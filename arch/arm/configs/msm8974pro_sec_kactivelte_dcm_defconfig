@@ -138,12 +138,10 @@ CONFIG_IIO_ST_HWMON=y
 #CONFIG_NFC_PN547 is not set
 #CONFIG_NFC_PN547_PMC8974_CLK_REQ is not set
 #
-# Samsung NFC driver
-#
-#CONFIG_NFC is not set
-#CONFIG_SEC_NFC_SENN3AB is not set
-#CONFIG_SEC_NFC_SENN3AB_FN is not set
-#CONFIG_NFC_DEBUG is not set
+#FeliCa
+#CONFIG_FELICA is not set
+#CONFIG_NFC_FELICA is not set
+#CONFIG_FELICA_NO_SECURE is not set
 
 #ISDBT FCI8300 tuner
 #
