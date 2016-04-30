@@ -55,7 +55,8 @@
 
 /* Hmodel */
 #if defined(CONFIG_ARCH_MSM8974) || defined(CONFIG_ARCH_MSM8974PRO)
-#if !defined(CONFIG_MACH_KLTE_KDI) && !defined(CONFIG_MACH_KLTE_DCM) && !defined(CONFIG_MACH_KLTE_SBM)
+#if !defined(CONFIG_MACH_KLTE_KDI) && !defined(CONFIG_MACH_KLTE_DCM) && !defined(CONFIG_MACH_KLTE_SBM) \
+	&& !defined(CONFIG_MACH_KACTIVELTE_DCM)
 static int gfelica_irq_int_pin = -1;
 #endif
 static struct platform_device *felica_gpio_pdev;
@@ -67,7 +68,7 @@ static int gfelica_hsel_pin = GPIO_PINID_NFC_HSEL;
 #define HW_REV09_OR_10		7	// to fix hltedcm i2c h/w issue in REV 09/10.
 extern void of_sii8240_hw_poweron(bool enable);  // to fix hltedcm i2c h/w issue in REV 09/10.  Defined in driver/video/msm/mhl_v2/sii8240.c
 /* K MODEL */
-#elif defined(CONFIG_MACH_KLTE_DCM) || defined(CONFIG_MACH_KLTE_SBM)
+#elif defined(CONFIG_MACH_KLTE_DCM) || defined(CONFIG_MACH_KLTE_SBM) || defined(CONFIG_MACH_KACTIVELTE_DCM)
 static int gfelica_sps_pin = -1;	//Select Power Supply
 static int gfelica_pon_pin = GPIO_FELICA_PON_REV06;	// PON
 static int gfelica_hsel_pin = -1;
@@ -1261,7 +1262,7 @@ static int felica_pon_close(struct inode *inode, struct file *file)
 #elif defined(CONFIG_ARCH_APQ8064)
 	ice_gpiox_set(GPIO_PINID_FELICA_PON, GPIO_VALUE_LOW);
 #elif defined(CONFIG_ARCH_MSM8974) || defined(CONFIG_ARCH_MSM8974PRO)
-#if defined(CONFIG_MACH_KLTE_KDI) || defined(CONFIG_MACH_KLTE_DCM) || defined(CONFIG_MACH_KLTE_SBM)
+#if defined(CONFIG_MACH_KLTE_KDI) || defined(CONFIG_MACH_KLTE_DCM) || defined(CONFIG_MACH_KLTE_SBM) || defined(CONFIG_MACH_KACTIVELTE_DCM)
 	gpio_set_value(gfelica_pon_pin, GPIO_VALUE_LOW);
 #else
 	gpio_set_value(GPIO_PINID_FELICA_PON, GPIO_VALUE_LOW);
@@ -1286,7 +1287,8 @@ static ssize_t felica_pon_read(struct file *file, char __user *buf, size_t len,
 #elif defined(CONFIG_ARCH_APQ8064)
 	ret = ice_gpiox_get(GPIO_PINID_FELICA_PON);
 #elif defined(CONFIG_ARCH_MSM8974) || defined(CONFIG_ARCH_MSM8974PRO)
-#if defined(CONFIG_MACH_KLTE_KDI) || defined(CONFIG_MACH_KLTE_DCM) || defined(CONFIG_MACH_KLTE_SBM)
+#if defined(CONFIG_MACH_KLTE_KDI) || defined(CONFIG_MACH_KLTE_DCM) || defined(CONFIG_MACH_KLTE_SBM) \
+	|| defined(CONFIG_MACH_KACTIVELTE_DCM)
 	ret = gpio_get_value(gfelica_pon_pin);
 #else
 	ret = gpio_get_value(GPIO_PINID_FELICA_PON);
@@ -1362,7 +1364,7 @@ static ssize_t felica_pon_write(struct file *file, const char __user *data,
 		return FELICA_PON_DATA_LEN;
 	}
 	gpio_set_value(gfelica_pon_pin, setparam);
-#elif defined(CONFIG_MACH_KLTE_DCM) || defined(CONFIG_MACH_KLTE_SBM)
+#elif defined(CONFIG_MACH_KLTE_DCM) || defined(CONFIG_MACH_KLTE_SBM) || defined(CONFIG_MACH_KACTIVELTE_DCM)
 	gpio_set_value(gfelica_pon_pin, setparam);
 #else
 	gpio_set_value(GPIO_PINID_FELICA_PON, setparam);
@@ -2135,7 +2137,8 @@ static irqreturn_t felica_int_irq_handler(int irq, void *dev_id)
 	FELICA_PR_DBG(" %s START", __func__);
 
 #if defined(CONFIG_ARCH_MSM8974) || defined(CONFIG_ARCH_MSM8974PRO)
-#if defined(CONFIG_MACH_KLTE_KDI) || defined(CONFIG_MACH_KLTE_DCM) || defined(CONFIG_MACH_KLTE_SBM)
+#if defined(CONFIG_MACH_KLTE_KDI) || defined(CONFIG_MACH_KLTE_DCM) || defined(CONFIG_MACH_KLTE_SBM) \
+	|| defined(CONFIG_MACH_KACTIVELTE_DCM)
 	disable_irq_nosync(gpio_to_irq(GPIO_PINID_FELICA_INT));
 #else
 	disable_irq_nosync(gpio_to_irq(gfelica_irq_int_pin));
@@ -2157,7 +2160,8 @@ static void felica_int_irq_work(struct work_struct *work)
 {
 	FELICA_PR_DBG(" %s START", __func__);
 #if defined(CONFIG_ARCH_MSM8974) || defined(CONFIG_ARCH_MSM8974PRO)
-#if defined(CONFIG_MACH_KLTE_KDI) || defined(CONFIG_MACH_KLTE_DCM) || defined(CONFIG_MACH_KLTE_SBM)
+#if defined(CONFIG_MACH_KLTE_KDI) || defined(CONFIG_MACH_KLTE_DCM) || defined(CONFIG_MACH_KLTE_SBM) \
+	|| defined(CONFIG_MACH_KACTIVELTE_DCM)
 	enable_irq(gpio_to_irq(GPIO_PINID_FELICA_INT));
 #else
 	enable_irq(gpio_to_irq(gfelica_irq_int_pin));
@@ -2186,7 +2190,8 @@ static void felica_int_poll_init(void)
 	struct device *device_felica_int_poll;
 	
 #if defined(CONFIG_ARCH_MSM8974) || defined(CONFIG_ARCH_MSM8974PRO)
-#if !defined(CONFIG_MACH_KLTE_KDI) && !defined(CONFIG_MACH_KLTE_DCM) && !defined(CONFIG_MACH_KLTE_SBM)
+#if !defined(CONFIG_MACH_KLTE_KDI) && !defined(CONFIG_MACH_KLTE_DCM) && !defined(CONFIG_MACH_KLTE_SBM) \
+	&& !defined(CONFIG_MACH_KACTIVELTE_DCM)
 	struct device *dev = &felica_gpio_pdev->dev;
 	struct device_node *np;
 #endif	// CONFIG_MACH_KLTE
@@ -2233,7 +2238,8 @@ static void felica_int_poll_init(void)
 
 
 #if defined(CONFIG_ARCH_MSM8974) || defined(CONFIG_ARCH_MSM8974PRO)
-#if !defined(CONFIG_MACH_KLTE_KDI) && !defined(CONFIG_MACH_KLTE_DCM) && !defined(CONFIG_MACH_KLTE_SBM)
+#if !defined(CONFIG_MACH_KLTE_KDI) && !defined(CONFIG_MACH_KLTE_DCM) && !defined(CONFIG_MACH_KLTE_SBM) \
+	&& !defined(CONFIG_MACH_KACTIVELTE_DCM)
 	if (!dev) {
 		FELICA_PR_ERR(" %s ERROR NULL", __func__);
 		return;
@@ -2269,7 +2275,8 @@ static void felica_int_poll_init(void)
 	}
 #endif
 
-#if defined(CONFIG_MACH_KLTE_KDI) || defined(CONFIG_MACH_KLTE_DCM) || defined(CONFIG_MACH_KLTE_SBM)
+#if defined(CONFIG_MACH_KLTE_KDI) || defined(CONFIG_MACH_KLTE_DCM) || defined(CONFIG_MACH_KLTE_SBM) \
+	|| defined(CONFIG_MACH_KACTIVELTE_DCM)
 	ret = request_threaded_irq(
 		  gpio_to_irq(GPIO_PINID_FELICA_INT),
 		  NULL,
@@ -2306,7 +2313,8 @@ static void felica_int_poll_init(void)
 		return;
 	}
 #if defined(CONFIG_ARCH_MSM8974) || defined(CONFIG_ARCH_MSM8974PRO)
-#if defined(CONFIG_MACH_KLTE_KDI) || defined(CONFIG_MACH_KLTE_DCM) || defined(CONFIG_MACH_KLTE_SBM)
+#if defined(CONFIG_MACH_KLTE_KDI) || defined(CONFIG_MACH_KLTE_DCM) || defined(CONFIG_MACH_KLTE_SBM) \
+	|| defined(CONFIG_MACH_KACTIVELTE_DCM)
 	ret = enable_irq_wake(gpio_to_irq(GPIO_PINID_FELICA_INT));
 	if (ret < 0) {
 		free_irq(gpio_to_irq(GPIO_PINID_FELICA_INT), (void *)pgint_irq);
@@ -2362,7 +2370,8 @@ static void felica_int_poll_exit(void)
 
 
 #if defined(CONFIG_ARCH_MSM8974) || defined(CONFIG_ARCH_MSM8974PRO)
-#if defined(CONFIG_MACH_KLTE_KDI) || defined(CONFIG_MACH_KLTE_DCM) || defined(CONFIG_MACH_KLTE_SBM)
+#if defined(CONFIG_MACH_KLTE_KDI) || defined(CONFIG_MACH_KLTE_DCM) || defined(CONFIG_MACH_KLTE_SBM) \
+	|| defined(CONFIG_MACH_KACTIVELTE_DCM)
 	disable_irq(gpio_to_irq(GPIO_PINID_FELICA_INT));
 	free_irq(gpio_to_irq(
 		GPIO_PINID_FELICA_INT),
@@ -2431,7 +2440,8 @@ static ssize_t felica_int_poll_read(struct file *file, char __user *buf,
 	}
 
 #if defined(CONFIG_ARCH_MSM8974) || defined(CONFIG_ARCH_MSM8974PRO)
-#if defined(CONFIG_MACH_KLTE_KDI) || defined(CONFIG_MACH_KLTE_DCM) || defined(CONFIG_MACH_KLTE_SBM)
+#if defined(CONFIG_MACH_KLTE_KDI) || defined(CONFIG_MACH_KLTE_DCM) || defined(CONFIG_MACH_KLTE_SBM) \
+	|| defined(CONFIG_MACH_KACTIVELTE_DCM)
 	ret = gpio_get_value(GPIO_PINID_FELICA_INT);
 #else	
 	ret = gpio_get_value(gfelica_irq_int_pin);
@@ -2867,7 +2877,8 @@ static void felica_initialize_pin(void)
 #elif defined(CONFIG_ARCH_APQ8064)
 	ice_gpiox_set(GPIO_PINID_FELICA_PON, GPIO_VALUE_LOW);
 #elif defined(CONFIG_ARCH_MSM8974) || defined(CONFIG_ARCH_MSM8974PRO)
-#if !defined(CONFIG_MACH_KLTE_KDI) && !defined(CONFIG_MACH_KLTE_DCM) && !defined(CONFIG_MACH_KLTE_SBM)	// We are not doing the initialization here. felica_register_device() does it and sets up the initial pin value to LOW.
+#if !defined(CONFIG_MACH_KLTE_KDI) && !defined(CONFIG_MACH_KLTE_DCM) && !defined(CONFIG_MACH_KLTE_SBM) \
+	&& !defined(CONFIG_MACH_KACTIVELTE_DCM) // We are not doing the initialization here. felica_register_device() does it and sets up the initial pin value to LOW.
 	gpio_set_value(GPIO_PINID_FELICA_PON, GPIO_VALUE_LOW);
 #endif
 #endif
@@ -2887,7 +2898,8 @@ static void felica_finalize_pin(void)
 #elif defined(CONFIG_ARCH_APQ8064)
 	ice_gpiox_set(GPIO_PINID_FELICA_PON, GPIO_VALUE_LOW);
 #elif defined(CONFIG_ARCH_MSM8974) || defined(CONFIG_ARCH_MSM8974PRO)
-#if !defined (CONFIG_MACH_KLTE_KDI) && !defined (CONFIG_MACH_KLTE_DCM) && !defined(CONFIG_MACH_KLTE_SBM)	// We are not doing the initialization here. felica_register_device() does it and sets up the initial pin value to LOW.
+#if !defined (CONFIG_MACH_KLTE_KDI) && !defined (CONFIG_MACH_KLTE_DCM) && !defined(CONFIG_MACH_KLTE_SBM) \
+	&& !defined(CONFIG_MACH_KACTIVELTE_DCM) // We are not doing the initialization here. felica_register_device() does it and sets up the initial pin value to LOW.
 	gpio_set_value(GPIO_PINID_FELICA_PON, GPIO_VALUE_LOW);
 #endif
 #endif
@@ -2900,14 +2912,16 @@ static void felica_finalize_pin(void)
  */
 static void felica_register_device(void)
 {
-#if defined(CONFIG_MACH_KLTE_KDI) || defined(CONFIG_MACH_KLTE_DCM) || defined(CONFIG_MACH_KLTE_SBM)
+#if defined(CONFIG_MACH_KLTE_KDI) || defined(CONFIG_MACH_KLTE_DCM) || defined(CONFIG_MACH_KLTE_SBM) \
+	|| defined(CONFIG_MACH_KACTIVELTE_DCM)
 	struct device *dev = &felica_gpio_pdev->dev;
 	struct device_node *np;	
 #endif 	
 
 	FELICA_PR_DBG(" %s START", __func__);
 
-#if defined(CONFIG_MACH_KLTE_KDI) || defined(CONFIG_MACH_KLTE_DCM) || defined(CONFIG_MACH_KLTE_SBM)
+#if defined(CONFIG_MACH_KLTE_KDI) || defined(CONFIG_MACH_KLTE_DCM) || defined(CONFIG_MACH_KLTE_SBM) \
+	|| defined(CONFIG_MACH_KACTIVELTE_DCM)
 	if (!dev) 
 	{
 		FELICA_PR_ERR(" %s ERROR NULL", __func__);
@@ -2951,7 +2965,7 @@ static void felica_register_device(void)
 
 	gpio_set_value(gfelica_hsel_pin, GPIO_VALUE_LOW);
 	
-#if defined(CONFIG_MACH_KLTE_DCM) || defined(CONFIG_MACH_KLTE_SBM)
+#if defined(CONFIG_MACH_KLTE_DCM) || defined(CONFIG_MACH_KLTE_SBM) || defined(CONFIG_MACH_KACTIVELTE_DCM)
 	
 	gfelica_sps_pin = of_get_named_gpio(np, "felica,sps-gpio", 0);
 	if(gfelica_sps_pin < 0)
@@ -3078,7 +3092,8 @@ static int __init felica_init(void)
 #endif
 	FELICA_PR_INFO(" %s , system_rev=[%d]", __func__, system_rev);
 	/* FELICA_INTU GPIO is changed End */
-#if defined(CONFIG_MACH_KLTE_KDI) || defined(CONFIG_MACH_KLTE_DCM) || defined(CONFIG_MACH_KLTE_SBM)
+#if defined(CONFIG_MACH_KLTE_KDI) || defined(CONFIG_MACH_KLTE_DCM) || defined(CONFIG_MACH_KLTE_SBM) \
+	|| defined(CONFIG_MACH_KACTIVELTE_DCM)
 	felica_int_poll_init();
 #endif // CONFIG_MACH_KLTE
 	snfc_register_device();
@@ -4254,7 +4269,8 @@ static ssize_t cxd2235power_write(struct file *file, const char __user *data,
 #elif defined(CONFIG_ARCH_APQ8064)
 	ice_gpiox_set(GPIO_PINID_NFC_PON, on);
 #elif defined(CONFIG_ARCH_MSM8974) || defined(CONFIG_ARCH_MSM8974PRO)
-#if defined(CONFIG_MACH_KLTE_KDI) || defined(CONFIG_MACH_KLTE_DCM) || defined(CONFIG_MACH_KLTE_SBM)
+#if defined(CONFIG_MACH_KLTE_KDI) || defined(CONFIG_MACH_KLTE_DCM) || defined(CONFIG_MACH_KLTE_SBM) \
+	|| defined(CONFIG_MACH_KACTIVELTE_DCM)
 	gpio_set_value(gfelica_pon_pin , on);	// PON is same for FELICA and NFC.
 #else
 	gpio_set_value(GPIO_PINID_NFC_PON , on);
