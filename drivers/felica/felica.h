@@ -595,7 +595,7 @@ static ssize_t snfc_rfs_read(struct file *file, char __user *buf, \
 #define UART_DEV_NAME					"/dev/ttySAC1"
 #elif defined(CONFIG_ARCH_APQ8064)
 #define UART_DEV_NAME					"/dev/ttyHSL2"
-#elif defined(CONFIG_MACH_KLTE_DCM) || defined(CONFIG_MACH_KLTE_KDI) || defined(CONFIG_MACH_KLTE_SBM)
+#elif defined(CONFIG_MACH_KLTE_DCM) || defined(CONFIG_MACH_KLTE_KDI) || defined(CONFIG_MACH_KLTE_SBM) || defined(CONFIG_MACH_KACTIVELTE_DCM)
 #define UART_DEV_NAME					"/dev/ttyHSL2"
 #elif defined(CONFIG_MACH_HLTEDCM)	|| defined(CONFIG_MACH_HLTEKDI) || defined(CONFIG_MACH_JS01LTEDCM)
 #define UART_DEV_NAME					"/dev/ttyHSL1"
