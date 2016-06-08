@@ -715,11 +715,10 @@
 	};
 
 	gpio@c800 { /* GPIO 9 */
-		/* NFC EN */
+		/* Touchscreen external LDO enable */
 		qcom,mode = <1>;		/* Digital output */
 		qcom,out-strength = <1>;	/* Low */
 		qcom,src-sel = <2>;		/* Function 1  */
-		qcom,vin-sel = <2>;		/* S4 = 1.8 V */
 		qcom,master-en = <1>;
 	};
 
