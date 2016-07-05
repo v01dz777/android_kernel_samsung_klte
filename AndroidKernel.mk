@@ -90,6 +90,9 @@ T10_WIFI_PROJECT ?= $(shell $(PERL) -e '$$of = "n"; while (<>) { if (/CONFIG_MAC
 RUBENSLTE_PROJECT ?= $(shell $(PERL) -e '$$of = "n"; while (<>) { if (/CONFIG_MACH_RUBENSLTE_OPEN=y/) { $$of = "y"; break; } } print $$of;' $(KERNEL_CONFIG))
 RUBENSWIFI_PROJECT ?= $(shell $(PERL) -e '$$of = "n"; while (<>) { if (/CONFIG_MACH_RUBENSWIFI_OPEN=y/) { $$of = "y"; break; } } print $$of;' $(KERNEL_CONFIG))
 VASTALTE_PROJECT ?= $(shell $(PERL) -e '$$of = "n"; while (<>) { if (/CONFIG_MACH_VASTALTE_CHN_CMCC_DUOS=y/) { $$of = "y"; break; } } print $$of;' $(KERNEL_CONFIG))
+KACTIVE_SKT_PROJECT ?= $(shell $(PERL) -e '$$of = "n"; while (<>) { if (/CONFIG_MACH_KACTIVELTE_SKT=y/) { $$of = "y"; break; } } print $$of;' $(KERNEL_CONFIG))
+KACTIVE_DCM_PROJECT ?= $(shell $(PERL) -e '$$of = "n"; while (<>) { if (/CONFIG_MACH_KACTIVELTE_DCM=y/) { $$of = "y"; break; } } print $$of;' $(KERNEL_CONFIG))
+KACTIVE_KOR_PROJECT ?= $(shell $(PERL) -e '$$of = "n"; while (<>) { if (/CONFIG_MACH_KACTIVELTE_KOR=y/) { $$of = "y"; break; } } print $$of;' $(KERNEL_CONFIG))
 
 ifeq "$(KERNEL_USE_OF)" "y"
 ifeq "$(K_PROJECT)" "y"
@@ -307,8 +310,6 @@ ifeq "$(KACTIVE_PROJECT)" "y"
 	ifeq "$(KACTIVE_SKT_PROJECT)" "y"
 		DTS_FILES = $(wildcard $(TOP)/kernel/arch/arm/boot/dts/msm8974pro/$(DTS_NAME)pro-ac-sec-kactivelteskt*.dts)
 	else ifeq "$(KACTIVE_DCM_PROJECT)" "y"
-		DTS_FILES = $(wildcard $(TOP)/kernel/arch/arm/boot/dts/msm8974pro/$(DTS_NAME)pro-ac-sec-kactiveltedcm*.dts)
-	else ifeq "$(LOCALE_JPN)" "y"
 		DTS_FILES = $(wildcard $(TOP)/kernel/arch/arm/boot/dts/msm8974pro/$(DTS_NAME)pro-ac-sec-kactiveltedcm*.dts)
 	else ifeq "$(KACTIVE_KOR_PROJECT)" "y"
 		DTS_FILES = $(wildcard $(TOP)/kernel/arch/arm/boot/dts/msm8974pro/$(DTS_NAME)pro-ac-sec-kactiveltekor*.dts)

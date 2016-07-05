@@ -459,6 +459,14 @@ static void of_sii8240_gpio_config(enum mhl_sleep_state sleep_status)
 			pr_err("[ERROR] %s() gpio_mhl_en is NULL\n", __func__);
 		}
 	}
+#if defined(CONFIG_MACH_KACTIVELTE_DCM)
+	gpio_tlmm_config (GPIO_CFG(pdata->gpio_mhl_sda, GPIOMUX_FUNC_3,
+				GPIO_CFG_INPUT, GPIO_CFG_NO_PULL, GPIO_CFG_2MA),
+			GPIO_CFG_ENABLE);
+	gpio_tlmm_config (GPIO_CFG(pdata->gpio_mhl_scl, GPIOMUX_FUNC_3,
+				GPIO_CFG_INPUT, GPIO_CFG_NO_PULL, GPIO_CFG_2MA),
+			GPIO_CFG_ENABLE);
+#endif
 }
 
 static void of_sii8240_hw_onoff(bool onoff)
