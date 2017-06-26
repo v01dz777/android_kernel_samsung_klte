@@ -53,18 +53,6 @@ chmod -R 755 $ramdisk/res/bc
 chmod -R 755 $ramdisk/res/misc
 
 # ramdisk changes
-# Felica
-insert_line init.qcom.rc "import init.carrier.rc" after "import init.qcom.usb.rc" "import init.carrier.rc";
-insert_line ueventd.qcom.rc "#JPN FeliCa" "/sys/devices/i2c.73/i2c-16/16-0018/input/input* delay 0664 system system" after "#JPN FeliCa";
-insert_line ueventd.qcom.rc "/dev/felica               0666    root   system" after "#JPN FeliCa" "/dev/felica               0666    root   system";
-insert_line ueventd.qcom.rc "/dev/felica_pon           0666    root   system" after "/dev/felica               0666    root   system" "/dev/felica_pon           0666    root   system";
-insert_line ueventd.qcom.rc "/dev/felica_cen           0666    root   system" after "/dev/felica_pon           0666    root   system" "/dev/felica_cen           0666    root   system";
-insert_line ueventd.qcom.rc "/dev/felica_rfs           0444    root   system" after "/dev/felica_cen           0666    root   system" "/dev/felica_rfs           0444    root   system";
-insert_line ueventd.qcom.rc "/dev/felica_rws           0666    root   system" after "/dev/felica_rfs           0444    root   system" "/dev/felica_rws           0666    root   system";
-insert_line ueventd.qcom.rc "/dev/felica_ant           0666    root   system" after "/dev/felica_rws           0666    root   system" "/dev/felica_ant           0666    root   system";
-insert_line ueventd.qcom.rc "/dev/felica_int_poll      0400    root   system" after "/dev/felica_ant           0666    root   system" "/dev/felica_int_poll      0400    root   system";
-insert_line ueventd.qcom.rc "/dev/felica_uid           0222    root   system" after "/dev/felica_int_poll      0400    root   system" "/dev/felica_uid           0222    root   system";
-insert_line ueventd.qcom.rc "/dev/felica_uicc          0666    root   system" after "/dev/felica_uid           0222    root   system" "/dev/felica_uicc          0666    root   system";
 
 ############### Ramdisk customization end ###############
 
