@@ -1,3 +1,7 @@
+#ifdef CONFIG_MSMB_CAMERA_LL
+#include <media/msm_cam_sensor_ll.h>
+#else
+
 #ifndef __LINUX_MSM_CAM_SENSOR_H
 #define __LINUX_MSM_CAM_SENSOR_H
 
@@ -12,7 +16,6 @@
 
 #define I2C_SEQ_REG_SETTING_MAX   5
 #define I2C_SEQ_REG_DATA_MAX      20
-#define I2C_REG_DATA_MAX       (8*1024)
 #define MAX_CID                   16
 
 #define MSM_SENSOR_MCLK_8HZ   8000000
@@ -63,6 +66,7 @@ enum msm_camera_i2c_reg_addr_type {
 	MSM_CAMERA_I2C_BYTE_ADDR = 1,
 	MSM_CAMERA_I2C_WORD_ADDR,
 	MSM_CAMERA_I2C_3B_ADDR,
+	MSM_CAMERA_I2C_ADDR_TYPE_MAX,
 };
 
 enum msm_camera_i2c_data_type {
@@ -74,6 +78,7 @@ enum msm_camera_i2c_data_type {
 	MSM_CAMERA_I2C_UNSET_WORD_MASK,
 	MSM_CAMERA_I2C_SET_BYTE_WRITE_MASK_DATA,
 	MSM_CAMERA_I2C_BURST_DATA,
+	MSM_CAMERA_I2C_DATA_TYPE_MAX,
 };
 
 enum msm_sensor_power_seq_type_t {
@@ -676,3 +681,4 @@ struct sensor_init_cfg_data {
 #define MSM_V4L2_PIX_FMT_META v4l2_fourcc('M', 'E', 'T', 'A') /* META */
 
 #endif /* __LINUX_MSM_CAM_SENSOR_H */
+#endif
