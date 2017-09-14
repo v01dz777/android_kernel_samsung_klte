@@ -8,7 +8,7 @@ echo -e $COLOR_GREEN"\n SmartPack-Kernel Build Script\n"$COLOR_NEUTRAL
 #
 echo -e $COLOR_GREEN"\n (c) sunilpaulmathew@xda-developers.com\n"$COLOR_NEUTRAL
 
-TOOLCHAIN="/home/sunil/android-ndk-r15b/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64/bin/arm-linux-androideabi-"
+TOOLCHAIN="$PWD/../../../prebuilts/gcc/linux-x86/arm/arm-linux-androideabi-4.9/bin/arm-linux-androideabi-"
 ARCHITECTURE=arm
 
 KERNEL_NAME="SmartPack-Kernel"
