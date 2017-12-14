@@ -136,6 +136,7 @@ extern void softirq_init(void);
 char __initdata boot_command_line[COMMAND_LINE_SIZE];
 /* Untouched saved command line (eg. for /proc) */
 char *saved_command_line;
+unsigned long saved_command_line_size;
 /* Command line for parameter parsing */
 static char *static_command_line;
 
@@ -391,7 +392,8 @@ static inline void smp_prepare_cpus(unsigned int maxcpus) { }
  */
 static void __init setup_command_line(char *command_line)
 {
-	saved_command_line = alloc_bootmem(strlen (boot_command_line)+1+50); // cmdline hack
+	saved_command_line_size = COMMAND_LINE_SIZE*2;
+	saved_command_line = alloc_bootmem(saved_command_line_size); // cmdline hack
 	static_command_line = alloc_bootmem(strlen (command_line)+1);
 	strcpy (saved_command_line, boot_command_line);
 	strcpy (static_command_line, command_line);
