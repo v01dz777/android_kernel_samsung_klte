@@ -1505,7 +1505,7 @@ CONFIG_STANDALONE=y
 CONFIG_PREVENT_FIRMWARE_BUILD=y
 CONFIG_FW_LOADER=y
 CONFIG_FIRMWARE_IN_KERNEL=y
-CONFIG_EXTRA_FIRMWARE="audience-es325-fw-h-eur.bin"
+CONFIG_EXTRA_FIRMWARE="audience-es325-fw-h-dcm.bin"
 CONFIG_EXTRA_FIRMWARE_DIR="firmware/es325"
 # CONFIG_DEBUG_DRIVER is not set
 # CONFIG_DEBUG_DEVRES is not set
@@ -1861,8 +1861,8 @@ CONFIG_BCM4339=y
 # CONFIG_BCM43455 is not set
 # CONFIG_BCM4334W is not set
 # CONFIG_BCM43454 is not set
-CONFIG_BCMDHD_FW_PATH="/system/etc/wifi/bcmdhd_sta.bin"
-CONFIG_BCMDHD_NVRAM_PATH="/system/etc/wifi/nvram_net.txt"
+CONFIG_BCMDHD_FW_PATH="/system/vendor/etc/wifi/bcmdhd_sta.bin"
+CONFIG_BCMDHD_NVRAM_PATH="/system/vendor/etc/wifi/nvram_net.txt"
 CONFIG_BROADCOM_WIFI_RESERVED_MEM=y
 # CONFIG_WIFI_BROADCOM_COB is not set
 CONFIG_WLAN_REGION_CODE=100
