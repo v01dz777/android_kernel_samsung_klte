@@ -51,7 +51,7 @@
  * log
  ******************************************************************************/
 
-#if defined(CONFIG_SEC_FACTORY)
+#ifndef CONFIG_SEC_DEBUG
 /* shown at FACTORY */
 #define FELICA_PR_ERR(A,...) pr_err("[FELICA]"A,##__VA_ARGS__)
 
